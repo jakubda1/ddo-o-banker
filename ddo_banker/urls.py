@@ -20,5 +20,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app.urls')),
     path('bank/', include('app.urls')),
-    path('api/', include(('app.routers', 'app'), namespace='core-api')),
 ]
