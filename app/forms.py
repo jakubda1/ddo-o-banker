@@ -1,7 +1,8 @@
 from django import forms
-from .models import Item, Character, ItemList
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+from .models import Item, Character
 
 
 class UploadFileForm(forms.Form):

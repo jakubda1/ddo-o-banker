@@ -1,27 +1,22 @@
-import json
+import glob
+import os
 import zipfile
+from zipfile import ZipFile
 
+import py7zr
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.shortcuts import render
 from rest_framework import generics
-from .serializers import ItemSerializer
-from .models import Item
-from django.contrib.auth.models import User
-from .forms import UploadFileForm
-from django.contrib.auth.decorators import login_required
-import os
-from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-import py7zr
-from zipfile import ZipFile
-import glob
-from .item_analyzer.analyzer import analyze
+
 from .forms import *
-from django.views.generic import ListView
-from django.http import JsonResponse
-from django.core import serializers
-from django.shortcuts import redirect
-from django.contrib.auth import login
-from django.contrib import messages
+from .item_analyzer.analyzer import analyze
+from .serializers import ItemSerializer
 
 
 def ajax_items_live_search(request):

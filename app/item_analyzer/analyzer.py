@@ -1,16 +1,14 @@
-from matplotlib.pyplot import plot as plt
-import pytesseract as tes
-from PIL import Image
-import cv2 as cv
-import numpy as np
-from matplotlib import pyplot as plt
+import os.path as op
 import re
 from typing import Union, List, AnyStr
-import os.path as op
 
-tes.pytesseract.tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\tesseract"
-TEMPLATE_TOP_PATH = op.join(op.dirname(__file__), "template/top.png")
-TEMPLATE_BOTTOM_PATH = op.join(op.dirname(__file__), "template/bottom.png")
+# import cv2 as cv
+import numpy as np
+# import pytesseract as tes
+#
+# tes.pytesseract.tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\tesseract"
+# TEMPLATE_TOP_PATH = op.join(op.dirname(__file__), "template/top.png")
+# TEMPLATE_BOTTOM_PATH = op.join(op.dirname(__file__), "template/bottom.png")
 
 
 def _match_template(img, template_path: str):

@@ -1,0 +1,6 @@
+matplotlib
+djangorestframework
+markdown
+django-filter
+numpy
+django=3.2.9

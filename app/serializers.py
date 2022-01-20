@@ -1,11 +1,10 @@
+from django.contrib.auth.models import update_last_login
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import *
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.settings import api_settings
-from django.contrib.auth.models import update_last_login
+
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
