@@ -13,7 +13,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from rest_framework import generics
-
+from .models import *
 from .forms import *
 from .item_analyzer.analyzer import analyze
 from .serializers import ItemSerializer
