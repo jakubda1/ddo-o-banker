@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+{#    {% if user.is_authenticated %}#}
+{##}
+{#        <div class="container" id="top-content-header">#}
+{#            <div class="container"#}
+{#                 style="margin-top: 0; padding-top: 0; margin-bottom: 10px; padding-bottom: 10px;#}
+{#                    border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;#}
+{#                    justify-content: center">#}
+{#                <div class="row" style="">#}
+{#                    <div class="col-lg-4 top-header"><a href="/manage">Manage Items</a></div>#}
+{#                    <div class="col-lg-4 top-header"><a href="/create">Characters</a></div>#}
+{#                    <div class="col-lg-4 top-header"><a href="/upload">Upload</a></div>#}
+{#                    <div class="col-lg-4 top-header"><a href="/logout">Logout</a></div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
+
+
+    <div>
+        <div class="container" style="display: flex; justify-content: center; align-items: center;">
+            <h2>Add Item as you like</h2>
+        </div>
+        <form class="form-control" method="post"
+              style="display: flex; justify-content: center; align-items: center; background-color: darkgray; margin-left: fill"
+              autocomplete="off">
+            {% csrf_token %}
+            <div class="container" style="display: flex; justify-content: center; align-items: center;">
+                <div class="row">
+                    <div class="col-md-3 autocomplete">
+                        Item name
+                        {#                        <input aria-label="Search" type="search" id="item-list-search-input"#}
+                        {#                               class="text fa-search form-control"#}
+                        {#                               placeholder="Search for item">#}
+                        <input id="item-list-search-input" type="text" name="item-name"
+                               class="text form-control"
+                               placeholder="Search for item">
+
+                    </div>
+                    {% for item in item_form %}
+                        <div class="col-md-3">{{ item.label }}<br>{{ item }}</div>
+                    {% endfor %}
+                    <div class="col-lg-12">
+                        <input type="submit" class="btn btn-primary"
+                               style="display: flex; justify-content: center; align-items: center;">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="w-100 text-center">
+            <form id="search-form" autocomplete="off">
+                {% csrf_token %}
+                <input type="text" id="search-input" class="text fa-search form-control" placeholder="Search for item">
+            </form>
+
+            <table class="table table-bordered" id="results-table-body">
+                <thead>
+                <tr>
+                    <td>Character</td>
+                    <td>Item name</td>
+                    <td>Mythic bonus</td>
+                    <td>Reaper bonus</td>
+                    <td>Transfer</td>
+                    <td>Delete</td>
+                </tr>
+                </thead>
+                <tbody id="result-table-body">
+                <tr id="not-visible">
+                    <td colspan="6" id="search-hint">Start typing into search box for results</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="results-box" class="results not-visible">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const url = window.location.href
+        const csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value
+
+
+        function character_item_search_success(res) {
+            if (res.data.length == 0) {
+                var rowCount = resultsTable.rows.length;
+                for (var i = 1; i < rowCount; i++) {
+                    resultsTable.deleteRow(1);
+                }
+            }
+
+            var rowCount = resultsTable.rows.length;
+            for (var i = 1; i < rowCount; i++) {
+                resultsTable.deleteRow(1);
+            }
+
+            for (i = 0; res.data.length; i++) {
+                if (resultsTable.classList.contains("not-visible")) {
+                    resultsTable.classList.remove("not-visible")
+                }
+
+
+                var item = res.data[i];
+                console.log(item.character)
+
+                var row = resultsTable.insertRow(1 + i);
+                var character = row.insertCell(0);
+                var name = row.insertCell(1);
+                var mythic = row.insertCell(2);
+                var reaper = row.insertCell(3);
+                var transfer = row.insertCell(4);
+                var del_item_button = row.insertCell(5);
+                character.innerHTML = item.character;
+                name.innerHTML = item.name;
+                mythic.innerHTML = item.mythic;
+                reaper.innerHTML = item.reaper;
+
+                {#globalizeItemIdxBeforeAjaxSend(item);#}
+                transfer.appendChild(select_character.cloneNode(true));
+                transfer.id = item.item_idx;
+
+                transfer.addEventListener("change",
+                    function (ev) {
+                        var selected_char = ev.target.options[ev.target.selectedIndex].value
+                        console.log(ev.currentTarget.id)
+                        $.ajax({
+                            type: "POST",
+                            url: "/transfer/",
+                            data: {
+                                "csrfmiddlewaretoken": csrf,
+                                "item_id": ev.currentTarget.id,
+                                "character": selected_char
+                            },
+                            success: (res) => {
+                                console.log(res)
+                            },
+                            error: (res) => {
+                                console.log(res)
+                            },
+                        });
+                    }, false)
+
+                del_item_button.appendChild(del_button.cloneNode(true));
+                del_item_button.id += item.item_idx;
+                del_item_button.addEventListener("click",
+                    function (ev) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/delete_item/",
+                            data: {
+                                "csrfmiddlewaretoken": csrf,
+                                "item_id": ev.path[1].attributes.id.nodeValue,
+                            },
+                            success: (res) => {
+                                console.log(res)
+                            },
+                            error: (res) => {
+                                console.log(res)
+                            },
+                        });
+                    }, false)
+            }
+        }
+
+        function item_search_success(res) {
+            console.log(res)
+            $("#item-list-search-input").autocomplete({
+                source: res.data
+            });
+        }
+
+        const sendSearchData = (item, search_url, success_function) => {
+            $.ajax({
+                type: "POST",
+                url: search_url,
+                data: {
+                    "csrfmiddlewaretoken": csrf,
+                    "item_name": item,
+                },
+                success: (res) => {
+                    success_function(res);
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+            })
+        }
+
+        const searchForm = document.getElementById("search-form")
+        const searchInput = document.getElementById("search-input")
+        var resultsTable = document.getElementById("results-table-body")
+        var del_button = document.createElement("input")
+        del_button.setAttribute("type", "submit")
+        del_button.setAttribute("value", "X")
+
+        var select_character = document.querySelector("select#id_character.form-control");
+        searchInput.addEventListener("keyup", e => {
+            console.log(e.target.value)
+            if (e.target.value == 1) {
+                return;
+            }
+
+            if (resultsTable.classList.contains("not-visible")) {
+                resultsTable.classList.remove("not-visible")
+            }
+
+            sendSearchData(e.target.value, "/search/", character_item_search_success)
+        });
+
+        const itemSearchInput = document.getElementById("item-list-search-input")
+        itemSearchInput.addEventListener("keyup", e => {
+            console.log(e.target.value)
+            if (e.target.value == 1) {
+                return;
+            }
+
+            if (resultsTable.classList.contains("not-visible")) {
+                resultsTable.classList.remove("not-visible")
+            }
+
+            sendSearchData(e.target.value, "/item_search/", item_search_success)
+        });
+
+    </script>
+
+{% endblock %}

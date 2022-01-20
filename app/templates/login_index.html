@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        <h1>DDO-O Bank</h1>
+        <h2>The utterly styled web page</h2>
+        <h12>And I don't care</h12>
+        <div class="row justify-content-md-center">
+
+            <div class="col-sm-8">
+                <img src="/static/images/Molgra.png">
+            </div>
+
+            <div class="col-lg-4 justify-content-center"
+                 style="margin-top: 25%; margin-bottom: 50%">
+                {% if form.errors %}
+                    <p>Your username and password didn't match. Please try again.</p>
+                {% endif %}
+                {{ context }}
+                {% if next %}
+                    {% if user.is_authenticated %}
+                        <p>Your account doesn't have access to this page. To proceed,
+                            please login with an account that has access.</p>
+                    {% else %}
+                        <p>Please login to see this page.</p>
+                    {% endif %}
+                {% endif %}
+
+
+                <div class="text box box-flex">
+                    <p>But - as players of DDO we are kinda used to it. Right? </p>
+
+                    <p>Anyway. This is really lightweight application to manage items of bank. </p>
+                    <p>But don't get it wrong! It's not fully automatical. Why would it be? I don't want your login
+                        informations and I can't care more about them.</p>
+                    <p>All I want for you is to be happy and know where you have your items. Even if you'd lost your
+                        excel sheet where did you probably kept track of all those items you have hoarded in years. You
+                        DEVIL!</p>
+
+                    <p>So try it and <a href="/register/" style="font-size: 20px">REGISTER HERE!</a></p>
+
+                </div>
+                <form class="form-control" method="post">
+                    {% csrf_token %}
+                    <table>
+                        <tr>
+                            <td>{{ form.username.label_tag }}</td>
+                            <td>{{ form.username }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form.password.label_tag }}</td>
+                            <td>{{ form.password }}</td>
+                        </tr>
+                    </table>
+
+                    <input type="submit" value="login">
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+
+                {# Assumes you set up the password_reset view in your URLconf #}
+                <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
