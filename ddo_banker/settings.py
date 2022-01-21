@@ -14,6 +14,8 @@ import sys
 from pathlib import Path
 import dj_database_url
 from django.core.management.utils import get_random_secret_key
+from decouple import config
+from ipaddress import IPv4Network, IPv4Address
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +24,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+DEBUG = config("DEBUG", default=False, cast=bool)
+DEVELOPMENT_MODE = config("DEVELOPMENT_MODE", default=False, cast=lambda v: v == "True")
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", "127.0.0.1,localhost",
+                       cast=lambda v: [s.strip() for s in v.split(",")])
+
+DEVELOPMENT_INSTANCE = config("DEVELOPMENT_INSTANCE", default=False, cast=lambda v: v == "True")
 
 # Application definition
 
@@ -42,6 +47,9 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'rest_framework',
 ]
+
+if DEBUG and DEVELOPMENT_INSTANCE:
+    INSTALLED_APPS.append("django_extensions")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,15 +96,15 @@ WSGI_APPLICATION = 'ddo_banker.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-if DEVELOPMENT_MODE is True:
+if DEVELOPMENT_MODE is False:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'defaultdb ',
-            'USER': 'doadmin',
-            'PASSWORD': 'gCSoNOxVI2RnXKT3',
-            'HOST': 'db-postgresql-ddo-banker-do-user-10644669-0.b.db.ondigitalocean.com',
-            'PORT': '25060',
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config("DB_NAME"),
+            'USER': config("DB_USER"),
+            'PASSWORD': config("DB_PASSWORD"),
+            'HOST': config("DB_HOST"),
+            'PORT': config("DB_PORT", default=5432),
         }
     }
 
