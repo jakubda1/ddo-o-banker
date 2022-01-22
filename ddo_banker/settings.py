@@ -170,3 +170,4 @@ MEDIA_URL = "/media/"
 
 LOGIN_REDIRECT_URL = "/manage"
 LOGOUT_REDIRECT_URL = "/login"
+
