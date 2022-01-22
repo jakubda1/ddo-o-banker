@@ -34,10 +34,10 @@ def ajax_items_live_search(request):
         return JsonResponse({"data": item_set})
 
 
-class ItemsView(generics.ListAPIView):
-    # queryset = Item.objects.all()
-    queryset = Item.objects.filter(user=User.objects.get(id=1))
-    serializer_class = ItemSerializer
+# class ItemsView(generics.ListAPIView):
+#     # queryset = Item.objects.all()
+#     queryset = Item.objects.filter(user=User.objects.get(id=1))
+#     serializer_class = ItemSerializer
 
 
 # def ItemsListView(ListView):
