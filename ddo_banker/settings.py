@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # 'django.contrib.sites',
     'app.apps.AppConfig',
     'rest_framework',
+    'crispy_forms',
 ]
 
 if DEBUG and DEVELOPMENT_INSTANCE:
