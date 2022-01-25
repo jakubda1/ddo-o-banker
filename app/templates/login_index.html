@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block head %}
+    {% load static %}
+{% endblock %}
 
 {% block content %}
 
@@ -9,9 +12,8 @@
     </span>
         <h1 style="padding-right: 0%; padding-left: 25%">Welcome to DDO Online Banker</h1>
         <div class="row justify-content-md-center">
-
             <div class="col-sm-8">
-                <img src="/static/images/Molgra.png">
+                <img src="{% static 'images/Molgra.png' %} ">
             </div>
 
             <div class="col-lg-4 justify-content-center"
@@ -33,7 +35,8 @@
                 <div class="text box box-flex">
                     <p>This is project that I decided to make in order to manage my items better.</p>
 
-                    <p>So far, it has only few functionalities, but I will make it more usefull and prettier by the time.</p>
+                    <p>So far, it has only few functionalities, but I will make it more usefull and prettier by the
+                        time.</p>
                     <p><b>What can be expected?</b></p>
                     <p>More filters to filter your items. <br>Items will have properties as in game to filter by</p>
                     <p><b>How does it work?</b></p>
@@ -41,7 +44,8 @@
                     <p>2. You need to add items to that character</p>
                     <p>3. Manage it! Keep track of your items. App will - hopefully - be useful to you.</p>
 
-                    <p><i>Please, keep in mind, that this app is still in development. Do you have suggestion how to make it better? <a>Write it here!</a></i></p>
+                    <p><i>Please, keep in mind, that this app is still in development. Do you have suggestion how to
+                        make it better? <a>Write it here!</a></i></p>
 
                     <p>So try it and <a href="/register/" style="font-size: 20px">REGISTER HERE!</a></p>
 
