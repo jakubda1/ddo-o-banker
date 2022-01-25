@@ -22,7 +22,7 @@ from .serializers import ItemSerializer
 def ajax_items_live_search(request):
     if request.is_ajax():
         item_name = request.POST.get("item_name")
-        queryset = ItemList.objects.filter(name__icontains=item_name)[:10]
+        queryset = ItemList.objects.filter(name__icontains=item_name).order_by("name")[:10]
         item_set = []
         if len(queryset) > 0 and len(item_name) > 0:
             for item in queryset:
